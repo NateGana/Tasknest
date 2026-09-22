@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TaskNest — Project & Task Management</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <span class="brand-mark">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.8"/></svg>
+      </span>
+      <span class="brand-name">TaskNest</span>
+    </div>
+    <nav class="nav">
+      <button class="nav-item active" data-view="dashboard">
+        <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+        Dashboard
+      </button>
+      <button class="nav-item" data-view="projects">
+        <svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h4l2 3h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg>
+        Projects
+      </button>
+      <button class="nav-item" data-view="board">
+        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M15 4v16"/></svg>
+        Task Board
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="mini-card">
+        <p class="mini-card-title">Overdue tasks?</p>
+        <p class="mini-card-text">Jump straight to the board and reprioritize.</p>
+        <button class="mini-card-btn" id="goBoard">Open board</button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="scrim" id="scrim"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+        <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <div class="page-title">
+        <h1 id="pageTitle">Dashboard</h1>
+        <p id="pageSubtitle">Your team's progress at a glance</p>
+      </div>
+      <div class="topbar-actions">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input type="text" id="globalSearch" placeholder="Search tasks…">
+        </div>
+        <div class="user-chip">
+          <div class="avatar">JC</div>
+          <div class="user-info">
+            <span class="user-name">Jasmine Cruz</span>
+            <span class="user-role">Product Lead</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- DASHBOARD -->
+      <section class="view active" id="view-dashboard">
+        <div class="stat-grid">
+          <div class="stat-card"><div class="stat-icon icon-indigo"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h4l2 3h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/></svg></div><div><p class="stat-label">Total Projects</p><p class="stat-value" id="statTotalProjects">0</p></div></div>
+          <div class="stat-card"><div class="stat-icon icon-violet"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div><div><p class="stat-label">Active Projects</p><p class="stat-value" id="statActiveProjects">0</p></div></div>
+          <div class="stat-card"><div class="stat-icon icon-green"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div><div><p class="stat-label">Completed Projects</p><p class="stat-value" id="statCompletedProjects">0</p></div></div>
+          <div class="stat-card"><div class="stat-icon icon-amber"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div><div><p class="stat-label">Pending Tasks</p><p class="stat-value" id="statPendingTasks">0</p></div></div>
+          <div class="stat-card"><div class="stat-icon icon-red"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5m0 3h.01"/></svg></div><div><p class="stat-label">Overdue Tasks</p><p class="stat-value" id="statOverdueTasks">0</p></div></div>
+          <div class="stat-card wide"><div class="stat-icon icon-indigo"><svg viewBox="0 0 24 24"><path d="M4 19V5m5 14v-8m5 8V9m5 10V4"/></svg></div><div><p class="stat-label">Overall Progress</p><p class="stat-value" id="statOverallProgress">0%</p></div></div>
+        </div>
+
+        <div class="panel-grid">
+          <div class="panel">
+            <div class="panel-head"><h2>Active Projects</h2></div>
+            <div id="dashboardProjectsList" class="dash-project-list"></div>
+            <div class="empty-state" id="dashboardProjectsEmpty" hidden><p>No active projects</p><span>Create a project to start tracking progress.</span></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h2>Tasks Due Soon</h2></div>
+            <div id="dashboardTasksList" class="dash-task-list"></div>
+            <div class="empty-state" id="dashboardTasksEmpty" hidden><p>Nothing due soon</p><span>You're all caught up.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PROJECTS -->
+      <section class="view" id="view-projects">
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <div class="search-box">
+              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+              <input type="text" id="projectSearch" placeholder="Search projects…">
+            </div>
+            <select id="projectStatusFilter" class="select-input">
+              <option value="">All Statuses</option>
+              <option value="Planning">Planning</option>
+              <option value="In Progress">In Progress</option>
+              <option value="On Hold">On Hold</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" id="addProjectBtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Add Project</button>
+        </div>
+        <div class="card-grid" id="projectsGrid"></div>
+        <div class="empty-state" id="projectsEmpty" hidden><p>No projects found</p><span>Try a different search or add your first project.</span></div>
+      </section>
+
+      <!-- KANBAN BOARD -->
+      <section class="view" id="view-board">
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <select id="boardProjectFilter" class="select-input"><option value="">All Projects</option></select>
+            <select id="boardPriorityFilter" class="select-input">
+              <option value="">All Priorities</option>
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+            <select id="boardSort" class="select-input">
+              <option value="deadline-asc">Deadline (Soonest)</option>
+              <option value="deadline-desc">Deadline (Latest)</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" id="addTaskBtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Add Task</button>
+        </div>
+        <div class="kanban" id="kanbanBoard">
+          <div class="kanban-col" data-status="To Do">
+            <div class="kanban-col-head"><span class="dot dot-slate"></span><h3>To Do</h3><span class="count" id="countTodo">0</span></div>
+            <div class="kanban-col-body" id="col-todo"></div>
+          </div>
+          <div class="kanban-col" data-status="In Progress">
+            <div class="kanban-col-head"><span class="dot dot-blue"></span><h3>In Progress</h3><span class="count" id="countProgress">0</span></div>
+            <div class="kanban-col-body" id="col-progress"></div>
+          </div>
+          <div class="kanban-col" data-status="Review">
+            <div class="kanban-col-head"><span class="dot dot-amber"></span><h3>Review</h3><span class="count" id="countReview">0</span></div>
+            <div class="kanban-col-body" id="col-review"></div>
+          </div>
+          <div class="kanban-col" data-status="Completed">
+            <div class="kanban-col-head"><span class="dot dot-green"></span><h3>Completed</h3><span class="count" id="countCompleted">0</span></div>
+            <div class="kanban-col-body" id="col-completed"></div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- PROJECT MODAL -->
+<div class="modal-overlay" id="projectModalOverlay">
+  <div class="modal">
+    <div class="modal-head"><h3 id="projectModalTitle">Add Project</h3><button class="modal-close" data-close-modal="projectModalOverlay">&times;</button></div>
+    <form id="projectForm" class="modal-body">
+      <input type="hidden" id="projectId">
+      <div class="form-row"><label>Project Name</label><input type="text" id="projectName" required placeholder="e.g. Website Redesign"></div>
+      <div class="form-row"><label>Description</label><textarea id="projectDescription" rows="3" required placeholder="Briefly describe the project scope"></textarea></div>
+      <div class="form-row"><label>Client</label><input type="text" id="projectClient" required placeholder="e.g. Horizon Retail Group"></div>
+      <div class="form-grid">
+        <div class="form-row"><label>Start Date</label><input type="date" id="projectStart" required></div>
+        <div class="form-row"><label>Due Date</label><input type="date" id="projectDue" required></div>
+      </div>
+      <div class="form-grid">
+        <div class="form-row"><label>Priority</label>
+          <select id="projectPriority"><option>Low</option><option selected>Medium</option><option>High</option></select>
+        </div>
+        <div class="form-row"><label>Status</label>
+          <select id="projectStatus"><option>Planning</option><option>In Progress</option><option>On Hold</option><option>Completed</option></select>
+        </div>
+      </div>
+      <div class="form-row"><label>Progress (%)</label><input type="number" id="projectProgress" min="0" max="100" step="5" value="0" required></div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" data-close-modal="projectModalOverlay">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="projectSubmitBtn">Add Project</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- PROJECT DETAILS MODAL -->
+<div class="modal-overlay" id="projectDetailsOverlay">
+  <div class="modal">
+    <div class="modal-head"><h3 id="detailsProjectName">Project</h3><button class="modal-close" data-close-modal="projectDetailsOverlay">&times;</button></div>
+    <div class="modal-body">
+      <p class="modal-note" id="detailsProjectDesc"></p>
+      <div class="details-grid">
+        <div><span class="details-label">Client</span><span class="details-value" id="detailsClient"></span></div>
+        <div><span class="details-label">Priority</span><span class="details-value" id="detailsPriority"></span></div>
+        <div><span class="details-label">Start Date</span><span class="details-value" id="detailsStart"></span></div>
+        <div><span class="details-label">Due Date</span><span class="details-value" id="detailsDue"></span></div>
+        <div><span class="details-label">Status</span><span class="details-value" id="detailsStatus"></span></div>
+        <div><span class="details-label">Progress</span><span class="details-value" id="detailsProgress"></span></div>
+      </div>
+      <div class="panel-head" style="margin-top:18px;"><h2>Tasks in this project</h2></div>
+      <div id="detailsTaskList" class="dash-task-list"></div>
+      <div class="empty-state" id="detailsTaskEmpty" hidden><p>No tasks yet</p><span>Add a task and assign it to this project.</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- TASK MODAL -->
+<div class="modal-overlay" id="taskModalOverlay">
+  <div class="modal">
+    <div class="modal-head"><h3 id="taskModalTitle">Add Task</h3><button class="modal-close" data-close-modal="taskModalOverlay">&times;</button></div>
+    <form id="taskForm" class="modal-body">
+      <input type="hidden" id="taskId">
+      <div class="form-row"><label>Task Name</label><input type="text" id="taskName" required placeholder="e.g. Design homepage hero section"></div>
+      <div class="form-row"><label>Description</label><textarea id="taskDescription" rows="2" placeholder="Optional details"></textarea></div>
+      <div class="form-grid">
+        <div class="form-row"><label>Project</label><select id="taskProject" required></select></div>
+        <div class="form-row"><label>Assigned To</label><input type="text" id="taskAssignee" required placeholder="e.g. Miguel Santos"></div>
+      </div>
+      <div class="form-grid">
+        <div class="form-row"><label>Priority</label><select id="taskPriority"><option>Low</option><option selected>Medium</option><option>High</option></select></div>
+        <div class="form-row"><label>Status</label>
+          <select id="taskStatus"><option>To Do</option><option>In Progress</option><option>Review</option><option>Completed</option></select>
+        </div>
+        <div class="form-row"><label>Due Date</label><input type="date" id="taskDue" required></div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" data-close-modal="taskModalOverlay">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="taskSubmitBtn">Add Task</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="confirmModalOverlay">
+  <div class="modal modal-sm">
+    <div class="modal-head"><h3 id="confirmModalTitle">Are you sure?</h3><button class="modal-close" data-close-modal="confirmModalOverlay">&times;</button></div>
+    <div class="modal-body">
+      <p class="modal-note" id="confirmModalText">This action cannot be undone.</p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" data-close-modal="confirmModalOverlay">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirmModalActionBtn">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
